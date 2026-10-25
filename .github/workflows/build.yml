@@ -6,6 +6,9 @@
 name: build
 on: [pull_request, push]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -28,3 +31,18 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
+      - name: publish GitHub release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(sed -n 's/^version=//p' gradle.properties | head -n 1)"
+          jar_path="$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' -print -quit)"
+          if [ -z "$version" ] || [ -z "$jar_path" ]; then
+            echo "Could not find the project version or built mod JAR."
+            exit 1
+          fi
+          gh release create "build-${GITHUB_RUN_NUMBER}" "$jar_path" \
+            --target "$GITHUB_SHA" \
+            --title "Magic Lanturn ${version} (build ${GITHUB_RUN_NUMBER})" \
+            --generate-notes

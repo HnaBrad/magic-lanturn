@@ -30,6 +30,10 @@ public final class LanturnContent {
 	public static final int LIGHT_LEVEL = 15;
 	public static final int FADE_IN_DURATION_TICKS = 300;
 	public static final int LIGHT_POINT_LIFETIME_TICKS = 600;
+	public static final int LIGHT_POINT_FADE_IN_MIN_TICKS = 40;
+	public static final int LIGHT_POINT_FADE_IN_MAX_TICKS = 120;
+	public static final int LIGHT_POINT_FADE_OUT_MIN_TICKS = 40;
+	public static final int LIGHT_POINT_FADE_OUT_MAX_TICKS = 120;
 	public static final int FADE_OUT_DURATION_TICKS = 200;
 	public static final IntegerProperty LIGHT_LEVEL_PROPERTY = IntegerProperty.create("light_level", 0, LIGHT_LEVEL);
 

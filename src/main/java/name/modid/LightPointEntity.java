@@ -23,8 +23,12 @@ public final class LightPointEntity extends Entity {
 		super(type, level);
 		setNoGravity(true);
 		RandomSource random = level.getRandom();
-		fadeInDuration = random.nextInt(40, 121);
-		fadeOutDuration = random.nextInt(40, 121);
+		fadeInDuration = random.nextInt(
+				LanturnContent.LIGHT_POINT_FADE_IN_MIN_TICKS,
+				LanturnContent.LIGHT_POINT_FADE_IN_MAX_TICKS + 1);
+		fadeOutDuration = random.nextInt(
+				LanturnContent.LIGHT_POINT_FADE_OUT_MIN_TICKS,
+				LanturnContent.LIGHT_POINT_FADE_OUT_MAX_TICKS + 1);
 		fadeInStart = random.nextInt(LanturnContent.LIGHT_POINT_LIFETIME_TICKS
 				- fadeInDuration - fadeOutDuration + 1);
 		int earliestFadeOut = fadeInStart + fadeInDuration;

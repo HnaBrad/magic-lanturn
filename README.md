@@ -8,6 +8,9 @@ despawns within 600 game ticks (30 seconds), removing its light source too.
 The lantern itself also fades out after being broken.
 
 The item is available in the Magic Lanturn creative tab.
+Each light point has its own randomized fade-in and fade-out timing; every
+point completes its cycle within 600 game ticks (30 seconds). GitHub Actions
+publishes the built mod JAR as a GitHub Release for every push.
 
 ## Setup
 
