@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "lanturn",
+	"version": "${version}",
+	"name": "Magic Lanturn",
+	"description": "Adds a lantern with a 125-point light grid that fades out when broken.",
+	"authors": [
+		"Audi"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/lanturn/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"name.modid.Lanturn"
+		],
+		"client": [
+			"name.modid.client.LanturnClient"
+		],
+		"fabric-datagen": [
+			"name.modid.client.LanturnDataGenerator"
+		]
+	},
+	"mixins": [
+		"lanturn.mixins.json",
+		{
+			"config": "lanturn.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
