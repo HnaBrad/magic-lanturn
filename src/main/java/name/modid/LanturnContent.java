@@ -1,5 +1,9 @@
 package name.modid;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -16,12 +20,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 public final class LanturnContent {
-	private static final ResourceKey<Block> LANTURN_BLOCK_KEY =
-			ResourceKey.create(Registries.BLOCK, Lanturn.id("lantern"));
-	private static final ResourceKey<Block> FADING_LIGHT_BLOCK_KEY =
-			ResourceKey.create(Registries.BLOCK, Lanturn.id("fading_light"));
-	private static final ResourceKey<Item> LANTURN_ITEM_KEY =
-			ResourceKey.create(Registries.ITEM, Lanturn.id("lantern"));
 	private static final ResourceKey<CreativeModeTab> LANTURN_TAB_KEY =
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Lanturn.id("items"));
 	private static final ResourceKey<EntityType<?>> LIGHT_POINT_ENTITY_KEY =
@@ -37,17 +35,8 @@ public final class LanturnContent {
 	public static final int FADE_OUT_DURATION_TICKS = 200;
 	public static final IntegerProperty LIGHT_LEVEL_PROPERTY = IntegerProperty.create("light_level", 0, LIGHT_LEVEL);
 
-	public static final Block FADING_LIGHT = Registry.register(
-			BuiltInRegistries.BLOCK,
-			FADING_LIGHT_BLOCK_KEY,
-			new FadingLightBlock(BlockBehaviour.Properties.of()
-					.setId(FADING_LIGHT_BLOCK_KEY)
-					.noCollision()
-					.noOcclusion()
-					.replaceable()
-					.noLootTable()
-					.lightLevel(state -> state.getValue(FadingLightBlock.LIGHT_LEVEL)))
-	);
+	public static final Map<LanturnColor, Block> FADING_LIGHTS = registerFadingLights();
+	public static final Block FADING_LIGHT = FADING_LIGHTS.get(LanturnColor.ORANGE);
 
 	public static final EntityType<LightPointEntity> LIGHT_POINT_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
@@ -59,21 +48,11 @@ public final class LanturnContent {
 					.build(LIGHT_POINT_ENTITY_KEY)
 	);
 
-	public static final Block LANTURN_BLOCK = Registry.register(
-			BuiltInRegistries.BLOCK,
-			LANTURN_BLOCK_KEY,
-			new LanturnBlock(BlockBehaviour.Properties.of()
-					.setId(LANTURN_BLOCK_KEY)
-					.strength(1.0f)
-					.noCollision()
-					.lightLevel(state -> state.getValue(LIGHT_LEVEL_PROPERTY)))
-	);
+	public static final Map<LanturnColor, Block> LANTURN_BLOCKS = registerLanturnBlocks();
+	public static final Block LANTURN_BLOCK = LANTURN_BLOCKS.get(LanturnColor.ORANGE);
 
-	public static final Item LANTURN_ITEM = Registry.register(
-			BuiltInRegistries.ITEM,
-			LANTURN_ITEM_KEY,
-			new BlockItem(LANTURN_BLOCK, new Item.Properties().setId(LANTURN_ITEM_KEY))
-	);
+	public static final Map<LanturnColor, Item> LANTURN_ITEMS = registerLanturnItems();
+	public static final Item LANTURN_ITEM = LANTURN_ITEMS.get(LanturnColor.ORANGE);
 
 	public static final CreativeModeTab LANTURN_TAB = Registry.register(
 			BuiltInRegistries.CREATIVE_MODE_TAB,
@@ -81,7 +60,7 @@ public final class LanturnContent {
 			CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
 					.title(Component.translatable("itemGroup.lanturn"))
 					.icon(() -> new ItemStack(LANTURN_ITEM))
-					.displayItems((parameters, output) -> output.accept(LANTURN_ITEM))
+					.displayItems((parameters, output) -> LANTURN_ITEMS.values().forEach(output::accept))
 					.build()
 	);
 
@@ -89,6 +68,46 @@ public final class LanturnContent {
 	}
 
 	public static void initialize() {
+	}
+
+	private static Map<LanturnColor, Block> registerFadingLights() {
+		Map<LanturnColor, Block> blocks = new EnumMap<>(LanturnColor.class);
+		for (LanturnColor color : LanturnColor.values()) {
+			ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Lanturn.id(color.lightId()));
+			Block block = new FadingLightBlock(BlockBehaviour.Properties.of()
+					.setId(key)
+					.noCollision()
+					.noOcclusion()
+					.replaceable()
+					.noLootTable()
+					.lightLevel(state -> state.getValue(FadingLightBlock.LIGHT_LEVEL)));
+			blocks.put(color, Registry.register(BuiltInRegistries.BLOCK, key, block));
+		}
+		return Collections.unmodifiableMap(blocks);
+	}
+
+	private static Map<LanturnColor, Block> registerLanturnBlocks() {
+		Map<LanturnColor, Block> blocks = new EnumMap<>(LanturnColor.class);
+		for (LanturnColor color : LanturnColor.values()) {
+			ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Lanturn.id(color.lanternId()));
+			Block block = new LanturnBlock(BlockBehaviour.Properties.of()
+					.setId(key)
+					.strength(1.0f)
+					.noCollision()
+					.lightLevel(state -> state.getValue(LIGHT_LEVEL_PROPERTY)), color);
+			blocks.put(color, Registry.register(BuiltInRegistries.BLOCK, key, block));
+		}
+		return Collections.unmodifiableMap(blocks);
+	}
+
+	private static Map<LanturnColor, Item> registerLanturnItems() {
+		Map<LanturnColor, Item> items = new EnumMap<>(LanturnColor.class);
+		for (LanturnColor color : LanturnColor.values()) {
+			ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Lanturn.id(color.lanternId()));
+			Item item = new BlockItem(LANTURN_BLOCKS.get(color), new Item.Properties().setId(key));
+			items.put(color, Registry.register(BuiltInRegistries.ITEM, key, item));
+		}
+		return Collections.unmodifiableMap(items);
 	}
 
 	static int ticksUntilNextFadeInLevel(int nextLevel) {

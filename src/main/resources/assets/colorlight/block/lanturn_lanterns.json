@@ -1,0 +1,98 @@
+{
+  "lanturn:lantern_white": {
+    "color": "#f9fffe"
+  },
+  "lanturn:fading_light_white": {
+    "color": "#f9fffe"
+  },
+  "lanturn:lantern": {
+    "color": "#f9801d"
+  },
+  "lanturn:fading_light": {
+    "color": "#f9801d"
+  },
+  "lanturn:lantern_magenta": {
+    "color": "#c74ebd"
+  },
+  "lanturn:fading_light_magenta": {
+    "color": "#c74ebd"
+  },
+  "lanturn:lantern_light_blue": {
+    "color": "#3ab3da"
+  },
+  "lanturn:fading_light_light_blue": {
+    "color": "#3ab3da"
+  },
+  "lanturn:lantern_yellow": {
+    "color": "#fed83d"
+  },
+  "lanturn:fading_light_yellow": {
+    "color": "#fed83d"
+  },
+  "lanturn:lantern_lime": {
+    "color": "#80c71f"
+  },
+  "lanturn:fading_light_lime": {
+    "color": "#80c71f"
+  },
+  "lanturn:lantern_pink": {
+    "color": "#f38baa"
+  },
+  "lanturn:fading_light_pink": {
+    "color": "#f38baa"
+  },
+  "lanturn:lantern_gray": {
+    "color": "#474f52"
+  },
+  "lanturn:fading_light_gray": {
+    "color": "#474f52"
+  },
+  "lanturn:lantern_light_gray": {
+    "color": "#9d9d97"
+  },
+  "lanturn:fading_light_light_gray": {
+    "color": "#9d9d97"
+  },
+  "lanturn:lantern_cyan": {
+    "color": "#169c9c"
+  },
+  "lanturn:fading_light_cyan": {
+    "color": "#169c9c"
+  },
+  "lanturn:lantern_purple": {
+    "color": "#8932b8"
+  },
+  "lanturn:fading_light_purple": {
+    "color": "#8932b8"
+  },
+  "lanturn:lantern_blue": {
+    "color": "#3c44aa"
+  },
+  "lanturn:fading_light_blue": {
+    "color": "#3c44aa"
+  },
+  "lanturn:lantern_brown": {
+    "color": "#835432"
+  },
+  "lanturn:fading_light_brown": {
+    "color": "#835432"
+  },
+  "lanturn:lantern_green": {
+    "color": "#5e7c16"
+  },
+  "lanturn:fading_light_green": {
+    "color": "#5e7c16"
+  },
+  "lanturn:lantern_red": {
+    "color": "#b02e26"
+  },
+  "lanturn:fading_light_red": {
+    "color": "#b02e26"
+  },
+  "lanturn:lantern_black": {
+    "color": "#1d1d21"
+  },
+  "lanturn:fading_light_black": {
+    "color": "#1d1d21"
+  }
+}

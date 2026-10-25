@@ -19,6 +19,7 @@ public final class LightPointEntity extends Entity {
 	private int fadeOutStart = -1;
 	private int fadeOutDuration;
 	private BlockPos lanternPos;
+	private LanturnColor color = LanturnColor.ORANGE;
 
 	public LightPointEntity(EntityType<? extends LightPointEntity> type, Level level) {
 		super(type, level);
@@ -38,6 +39,10 @@ public final class LightPointEntity extends Entity {
 		this.lanternPos = lanternPos.immutable();
 	}
 
+	public void setColor(LanturnColor color) {
+		this.color = color;
+	}
+
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 	}
@@ -51,21 +56,22 @@ public final class LightPointEntity extends Entity {
 
 		age++;
 		if (lanternPos != null && fadeOutStart < 0
-				&& !level().getBlockState(lanternPos).is(LanturnContent.LANTURN_BLOCK)) {
+				&& !level().getBlockState(lanternPos).is(LanturnContent.LANTURN_BLOCKS.get(color))) {
 			fadeOutStart = Math.max(age, fadeInStart + fadeInDuration);
 		}
 
 		BlockPos lightPos = blockPosition();
 		BlockState lightState = level().getBlockState(lightPos);
+		var lightBlock = LanturnContent.FADING_LIGHTS.get(color);
 		int lightLevel = getLightLevelForAge();
-		if (lightState.is(LanturnContent.FADING_LIGHT) && lightState.getValue(FadingLightBlock.LIGHT_POINT)) {
+		if (lightState.is(lightBlock) && lightState.getValue(FadingLightBlock.LIGHT_POINT)) {
 			if (lightLevel == 0) {
 				level().removeBlock(lightPos, false);
 			} else if (lightState.getValue(FadingLightBlock.LIGHT_LEVEL) != lightLevel) {
 				level().setBlock(lightPos, lightState.setValue(FadingLightBlock.LIGHT_LEVEL, lightLevel), 3);
 			}
 		} else if (lightState.isAir() && lightLevel > 0) {
-			level().setBlock(lightPos, LanturnContent.FADING_LIGHT.defaultBlockState()
+			level().setBlock(lightPos, lightBlock.defaultBlockState()
 					.setValue(FadingLightBlock.LIGHT_LEVEL, lightLevel)
 					.setValue(FadingLightBlock.FADE_START_LEVEL, LanturnContent.LIGHT_LEVEL)
 					.setValue(FadingLightBlock.LIGHT_POINT, true), 3);
@@ -117,6 +123,7 @@ public final class LightPointEntity extends Entity {
 		output.putInt("FadeInDuration", fadeInDuration);
 		output.putInt("FadeOutStart", Math.max(0, fadeOutStart));
 		output.putInt("FadeOutDuration", fadeOutDuration);
+		output.putString("Color", color.id());
 		output.putBoolean("HasLanternPos", lanternPos != null);
 		if (lanternPos != null) {
 			output.putInt("LanternX", lanternPos.getX());
@@ -135,6 +142,7 @@ public final class LightPointEntity extends Entity {
 		fadeOutStart = savedFadeOutStart > 0
 				? Math.max(fadeInStart + fadeInDuration, savedFadeOutStart)
 				: -1;
+		color = LanturnColor.byId(input.getStringOr("Color", "orange"));
 		if (input.getBooleanOr("HasLanternPos", false)) {
 			lanternPos = new BlockPos(
 					input.getIntOr("LanternX", 0),

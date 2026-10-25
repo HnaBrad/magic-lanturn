@@ -16,14 +16,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 
 public final class LanturnBlock extends Block {
+	private final LanturnColor color;
+	private final Block lightBlock;
 	private static final int LIGHT_POINT_COUNT = 125;
 	private static final int LIGHT_POINT_SPACING = 5;
 	private static final int GRID_MIN_OFFSET = -10;
 	private static final int GRID_MAX_OFFSET = 10;
 	private static final int GRID_MIN_Y_OFFSET = -12;
 
-	public LanturnBlock(BlockBehaviour.Properties properties) {
+	public LanturnBlock(BlockBehaviour.Properties properties, LanturnColor color) {
 		super(properties);
+		this.color = color;
+		this.lightBlock = LanturnContent.FADING_LIGHTS.get(color);
 		registerDefaultState(defaultBlockState().setValue(LanturnContent.LIGHT_LEVEL_PROPERTY, 0));
 	}
 
@@ -39,13 +43,14 @@ public final class LanturnBlock extends Block {
 			ServerLevel serverLevel = (ServerLevel) level;
 			for (BlockPos lightPos : lightPointPositions(pos)) {
 				if (level.isInWorldBounds(lightPos) && level.getBlockState(lightPos).isAir()) {
-					level.setBlock(lightPos, LanturnContent.FADING_LIGHT.defaultBlockState()
+					level.setBlock(lightPos, lightBlock.defaultBlockState()
 							.setValue(FadingLightBlock.LIGHT_LEVEL, 0)
 							.setValue(FadingLightBlock.FADE_START_LEVEL, LanturnContent.LIGHT_LEVEL)
 							.setValue(FadingLightBlock.LIGHT_POINT, true), 3);
 					LightPointEntity lightPoint = new LightPointEntity(LanturnContent.LIGHT_POINT_ENTITY, level);
 					lightPoint.setPos(lightPos.getX() + 0.5, lightPos.getY() + 0.5, lightPos.getZ() + 0.5);
 					lightPoint.setLanternPos(pos);
+					lightPoint.setColor(color);
 					if (!serverLevel.addFreshEntity(lightPoint)) {
 						level.removeBlock(lightPos, false);
 					}
@@ -86,10 +91,10 @@ public final class LanturnBlock extends Block {
 		super.playerDestroy(level, player, pos, state, blockEntity, tool);
 		int lightLevel = state.getValue(LanturnContent.LIGHT_LEVEL_PROPERTY);
 		if (lightLevel > 0) {
-			level.setBlock(pos, LanturnContent.FADING_LIGHT.defaultBlockState()
+			level.setBlock(pos, lightBlock.defaultBlockState()
 					.setValue(FadingLightBlock.LIGHT_LEVEL, lightLevel)
 					.setValue(FadingLightBlock.FADE_START_LEVEL, lightLevel), 3);
-			level.scheduleTick(pos, LanturnContent.FADING_LIGHT,
+			level.scheduleTick(pos, lightBlock,
 					LanturnContent.ticksUntilNextFadeOutLevel(lightLevel, lightLevel));
 		}
 	}

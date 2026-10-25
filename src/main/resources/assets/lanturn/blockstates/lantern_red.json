@@ -1,0 +1,9 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "lanturn:block/lantern_red"
+      }
+    }
+  ]
+}
