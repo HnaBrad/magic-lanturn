@@ -16,8 +16,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public final class LanturnContent {
 	private static final ResourceKey<CreativeModeTab> LANTURN_TAB_KEY =
@@ -54,13 +56,25 @@ public final class LanturnContent {
 	public static final Map<LanturnColor, Item> LANTURN_ITEMS = registerLanturnItems();
 	public static final Item LANTURN_ITEM = LANTURN_ITEMS.get(LanturnColor.WHITE);
 
+	public static final Block MINING_PORTAL_BLOCK = registerPortalBlock("mining_dimension_portal",
+			Lanturn.MINING_DIMENSION, "message.lanturn.portal.mining_unavailable");
+	public static final Item MINING_PORTAL_ITEM = registerPortalItem("mining_dimension_portal",
+			MINING_PORTAL_BLOCK);
+	public static final Block VOID_PORTAL_BLOCK = registerPortalBlock("void_dimension_portal",
+			Lanturn.VOID_DIMENSION, "message.lanturn.portal.void_unavailable");
+	public static final Item VOID_PORTAL_ITEM = registerPortalItem("void_dimension_portal", VOID_PORTAL_BLOCK);
+
 	public static final CreativeModeTab LANTURN_TAB = Registry.register(
 			BuiltInRegistries.CREATIVE_MODE_TAB,
 			LANTURN_TAB_KEY,
 			CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
 					.title(Component.translatable("itemGroup.lanturn"))
 					.icon(() -> new ItemStack(LANTURN_ITEM))
-					.displayItems((parameters, output) -> LANTURN_ITEMS.values().forEach(output::accept))
+					.displayItems((parameters, output) -> {
+						LANTURN_ITEMS.values().forEach(output::accept);
+						output.accept(MINING_PORTAL_ITEM);
+						output.accept(VOID_PORTAL_ITEM);
+					})
 					.build()
 	);
 
@@ -68,6 +82,12 @@ public final class LanturnContent {
 	}
 
 	public static void initialize() {
+		Registry.register(BuiltInRegistries.CHUNK_GENERATOR, Lanturn.id("flat_mining"), MiningChunkGenerator.CODEC);
+		ServerTickEvents.START_LEVEL_TICK.register(level -> {
+			if (level.dimension().equals(Lanturn.MINING_DIMENSION)) {
+				MiningChunkGenerator.freezeTime(level);
+			}
+		});
 	}
 
 	private static Map<LanturnColor, Block> registerFadingLights() {
@@ -108,6 +128,22 @@ public final class LanturnContent {
 			items.put(color, Registry.register(BuiltInRegistries.ITEM, key, item));
 		}
 		return Collections.unmodifiableMap(items);
+	}
+
+	private static Block registerPortalBlock(String path, ResourceKey<Level> dimension,
+			String unavailableMessageKey) {
+		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Lanturn.id(path));
+		Block block = new DimensionPortalBlock(BlockBehaviour.Properties.of()
+				.setId(key)
+				.strength(3.0f),
+				dimension, unavailableMessageKey);
+		return Registry.register(BuiltInRegistries.BLOCK, key, block);
+	}
+
+	private static Item registerPortalItem(String path, Block block) {
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Lanturn.id(path));
+		return Registry.register(BuiltInRegistries.ITEM, key,
+				new BlockItem(block, new Item.Properties().setId(key)));
 	}
 
 	static int ticksUntilNextFadeInLevel(int nextLevel) {

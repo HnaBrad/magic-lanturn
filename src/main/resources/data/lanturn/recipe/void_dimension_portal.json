@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "O": "minecraft:obsidian",
+    "E": "minecraft:ender_pearl"
+  },
+  "pattern": [
+    "OOO",
+    "OEO",
+    "OOO"
+  ],
+  "result": {
+    "id": "lanturn:void_dimension_portal"
+  }
+}

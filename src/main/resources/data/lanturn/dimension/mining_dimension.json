@@ -1,0 +1,10 @@
+{
+  "type": "lanturn:mining_dimension",
+  "generator": {
+    "type": "lanturn:flat_mining",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "preset": "minecraft:overworld"
+    }
+  }
+}

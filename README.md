@@ -16,6 +16,15 @@ Without ColorLight, Minecraft's built-in block lighting is white. All 16
 lanterns are available in the Magic Lanturn creative tab and can be crafted
 with a vanilla lantern in the center, surrounded by glass. The default white
 lantern uses regular glass; each colored variant uses matching stained glass.
+The Mining Dimension has flat, water-free terrain with its surface at Y=128,
+all vanilla Overworld biomes, and their natural ore features. Arrivals are
+placed above Y=128, and its clock is paused at noon. The Void Dimension is
+empty except for a 3-by-3 arrival platform at Y=60, with its portal in the
+center and stone bricks surrounding it.
+The Mining Dimension Portal is crafted with a diamond pickaxe surrounded by
+obsidian; the Void Dimension Portal uses an ender pearl surrounded by obsidian.
+Both are also available in the creative tab; matching portals appear at the
+destination, and players return to the exact entrance location they used.
 GitHub Actions builds the project and runs its configured tests on pushes and
 pull requests. It does not automatically upload build artifacts or publish
 GitHub releases.

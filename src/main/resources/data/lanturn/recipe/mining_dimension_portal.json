@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "O": "minecraft:obsidian",
+    "P": "minecraft:diamond_pickaxe"
+  },
+  "pattern": [
+    "OOO",
+    "OPO",
+    "OOO"
+  ],
+  "result": {
+    "id": "lanturn:mining_dimension_portal"
+  }
+}

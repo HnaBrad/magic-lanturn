@@ -32,5 +32,15 @@
   "item.lanturn.lantern_red": "Red Magic Lanturn",
   "item.lanturn.lantern_black": "Black Magic Lanturn",
   "block.lanturn.fading_light": "Fading Light",
+  "block.lanturn.mining_dimension_portal": "Mining Dimension Portal",
+  "item.lanturn.mining_dimension_portal": "Mining Dimension Portal",
+  "block.lanturn.void_dimension_portal": "Void Dimension Portal",
+  "item.lanturn.void_dimension_portal": "Void Dimension Portal",
+  "dimension.lanturn.mining_dimension": "Mining Dimension",
+  "dimension.lanturn.void_dimension": "Void Dimension",
+  "message.lanturn.portal.mining_unavailable": "The Mining Dimension is unavailable.",
+  "message.lanturn.portal.void_unavailable": "The Void Dimension is unavailable.",
+  "message.lanturn.portal.no_return": "No portal return location is saved for you.",
+  "message.lanturn.portal.teleport_failed": "Teleportation failed. Try again.",
   "itemGroup.lanturn": "Magic Lanturns"
 }
