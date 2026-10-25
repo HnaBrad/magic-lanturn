@@ -45,6 +45,7 @@ public final class LanturnBlock extends Block {
 							.setValue(FadingLightBlock.LIGHT_POINT, true), 3);
 					LightPointEntity lightPoint = new LightPointEntity(LanturnContent.LIGHT_POINT_ENTITY, level);
 					lightPoint.setPos(lightPos.getX() + 0.5, lightPos.getY() + 0.5, lightPos.getZ() + 0.5);
+					lightPoint.setLanternPos(pos);
 					if (!serverLevel.addFreshEntity(lightPoint)) {
 						level.removeBlock(lightPos, false);
 					}

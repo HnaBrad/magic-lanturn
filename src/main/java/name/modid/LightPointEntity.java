@@ -16,8 +16,9 @@ public final class LightPointEntity extends Entity {
 	private int age;
 	private int fadeInStart;
 	private int fadeInDuration;
-	private int fadeOutStart;
+	private int fadeOutStart = -1;
 	private int fadeOutDuration;
+	private BlockPos lanternPos;
 
 	public LightPointEntity(EntityType<? extends LightPointEntity> type, Level level) {
 		super(type, level);
@@ -29,11 +30,12 @@ public final class LightPointEntity extends Entity {
 		fadeOutDuration = random.nextInt(
 				LanturnContent.LIGHT_POINT_FADE_OUT_MIN_TICKS,
 				LanturnContent.LIGHT_POINT_FADE_OUT_MAX_TICKS + 1);
-		fadeInStart = random.nextInt(LanturnContent.LIGHT_POINT_LIFETIME_TICKS
-				- fadeInDuration - fadeOutDuration + 1);
-		int earliestFadeOut = fadeInStart + fadeInDuration;
-		int latestFadeOut = LanturnContent.LIGHT_POINT_LIFETIME_TICKS - fadeOutDuration;
-		fadeOutStart = random.nextInt(earliestFadeOut, latestFadeOut + 1);
+		fadeInStart = random.nextInt(LanturnContent.LIGHT_POINT_FADE_IN_WINDOW_TICKS
+				- fadeInDuration + 1);
+	}
+
+	public void setLanternPos(BlockPos lanternPos) {
+		this.lanternPos = lanternPos.immutable();
 	}
 
 	@Override
@@ -48,6 +50,11 @@ public final class LightPointEntity extends Entity {
 		}
 
 		age++;
+		if (lanternPos != null && fadeOutStart < 0
+				&& !level().getBlockState(lanternPos).is(LanturnContent.LANTURN_BLOCK)) {
+			fadeOutStart = Math.max(age, fadeInStart + fadeInDuration);
+		}
+
 		BlockPos lightPos = blockPosition();
 		BlockState lightState = level().getBlockState(lightPos);
 		int lightLevel = getLightLevelForAge();
@@ -64,7 +71,7 @@ public final class LightPointEntity extends Entity {
 					.setValue(FadingLightBlock.LIGHT_POINT, true), 3);
 		}
 
-		if (age >= LanturnContent.LIGHT_POINT_LIFETIME_TICKS) {
+		if (fadeOutStart >= 0 && age >= fadeOutStart + fadeOutDuration) {
 			discard();
 		}
 	}
@@ -76,7 +83,7 @@ public final class LightPointEntity extends Entity {
 		if (age < fadeInStart + fadeInDuration) {
 			return (age - fadeInStart) * LanturnContent.LIGHT_LEVEL / fadeInDuration;
 		}
-		if (age < fadeOutStart) {
+		if (fadeOutStart < 0 || age < fadeOutStart) {
 			return LanturnContent.LIGHT_LEVEL;
 		}
 		return Math.max(0, LanturnContent.LIGHT_LEVEL
@@ -108,8 +115,14 @@ public final class LightPointEntity extends Entity {
 		output.putInt("Age", age);
 		output.putInt("FadeInStart", fadeInStart);
 		output.putInt("FadeInDuration", fadeInDuration);
-		output.putInt("FadeOutStart", fadeOutStart);
+		output.putInt("FadeOutStart", Math.max(0, fadeOutStart));
 		output.putInt("FadeOutDuration", fadeOutDuration);
+		output.putBoolean("HasLanternPos", lanternPos != null);
+		if (lanternPos != null) {
+			output.putInt("LanternX", lanternPos.getX());
+			output.putInt("LanternY", lanternPos.getY());
+			output.putInt("LanternZ", lanternPos.getZ());
+		}
 	}
 
 	@Override
@@ -118,6 +131,15 @@ public final class LightPointEntity extends Entity {
 		fadeInDuration = Math.max(1, input.getIntOr("FadeInDuration", 80));
 		fadeOutDuration = Math.max(1, input.getIntOr("FadeOutDuration", 80));
 		fadeInStart = Math.max(0, input.getIntOr("FadeInStart", 0));
-		fadeOutStart = Math.max(fadeInStart + fadeInDuration, input.getIntOr("FadeOutStart", 400));
+		int savedFadeOutStart = input.getIntOr("FadeOutStart", 0);
+		fadeOutStart = savedFadeOutStart > 0
+				? Math.max(fadeInStart + fadeInDuration, savedFadeOutStart)
+				: -1;
+		if (input.getBooleanOr("HasLanternPos", false)) {
+			lanternPos = new BlockPos(
+					input.getIntOr("LanternX", 0),
+					input.getIntOr("LanternY", 0),
+					input.getIntOr("LanternZ", 0));
+		}
 	}
 }
