@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/lantern",
-  "textures": {
-    "lantern": "lanturn:block/lantern"
-  }
+  "parent": "minecraft:block/lantern"
 }

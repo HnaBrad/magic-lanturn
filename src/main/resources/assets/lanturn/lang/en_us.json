@@ -1,5 +1,6 @@
 {
-  "block.lanturn.lantern": "White Magic Lanturn",
+  "block.lanturn.lantern": "Magic Lanturn",
+  "item.lanturn.lantern": "Magic Lanturn",
   "block.lanturn.lantern_orange": "Orange Magic Lanturn",
   "block.lanturn.lantern_magenta": "Magenta Magic Lanturn",
   "block.lanturn.lantern_light_blue": "Light Blue Magic Lanturn",
