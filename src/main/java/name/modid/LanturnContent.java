@@ -36,7 +36,7 @@ public final class LanturnContent {
 	public static final IntegerProperty LIGHT_LEVEL_PROPERTY = IntegerProperty.create("light_level", 0, LIGHT_LEVEL);
 
 	public static final Map<LanturnColor, Block> FADING_LIGHTS = registerFadingLights();
-	public static final Block FADING_LIGHT = FADING_LIGHTS.get(LanturnColor.ORANGE);
+	public static final Block FADING_LIGHT = FADING_LIGHTS.get(LanturnColor.WHITE);
 
 	public static final EntityType<LightPointEntity> LIGHT_POINT_ENTITY = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
@@ -49,10 +49,10 @@ public final class LanturnContent {
 	);
 
 	public static final Map<LanturnColor, Block> LANTURN_BLOCKS = registerLanturnBlocks();
-	public static final Block LANTURN_BLOCK = LANTURN_BLOCKS.get(LanturnColor.ORANGE);
+	public static final Block LANTURN_BLOCK = LANTURN_BLOCKS.get(LanturnColor.WHITE);
 
 	public static final Map<LanturnColor, Item> LANTURN_ITEMS = registerLanturnItems();
-	public static final Item LANTURN_ITEM = LANTURN_ITEMS.get(LanturnColor.ORANGE);
+	public static final Item LANTURN_ITEM = LANTURN_ITEMS.get(LanturnColor.WHITE);
 
 	public static final CreativeModeTab LANTURN_TAB = Registry.register(
 			BuiltInRegistries.CREATIVE_MODE_TAB,

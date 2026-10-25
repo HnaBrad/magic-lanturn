@@ -35,11 +35,11 @@ enum LanturnColor {
 	}
 
 	String lanternId() {
-		return this == ORANGE ? "lantern" : "lantern_" + id;
+		return this == WHITE ? "lantern" : "lantern_" + id;
 	}
 
 	String lightId() {
-		return this == ORANGE ? "fading_light" : "fading_light_" + id;
+		return this == WHITE ? "fading_light" : "fading_light_" + id;
 	}
 
 	static LanturnColor byId(String id) {
@@ -48,6 +48,6 @@ enum LanturnColor {
 				return color;
 			}
 		}
-		return ORANGE;
+		return WHITE;
 	}
 }

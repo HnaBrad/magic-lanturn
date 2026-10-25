@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "lanturn:lantern_white"
+          "name": "lanturn:lantern_orange"
         }
       ],
       "conditions": [

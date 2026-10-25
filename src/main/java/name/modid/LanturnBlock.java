@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 public final class LanturnBlock extends Block {
 	private final LanturnColor color;
 	private final Block lightBlock;
-	private static final int LIGHT_POINT_COUNT = 125;
+	private static final int LIGHT_POINT_COUNT = 150;
 	private static final int LIGHT_POINT_SPACING = 5;
 	private static final int GRID_MIN_OFFSET = -10;
 	private static final int GRID_MAX_OFFSET = 10;
@@ -76,7 +76,7 @@ public final class LanturnBlock extends Block {
 	private static List<BlockPos> lightPointPositions(BlockPos lanternPos) {
 		List<BlockPos> positions = new ArrayList<>(LIGHT_POINT_COUNT);
 		for (int x = GRID_MIN_OFFSET; x <= GRID_MAX_OFFSET; x += LIGHT_POINT_SPACING) {
-			for (int y = GRID_MIN_Y_OFFSET; y < GRID_MIN_Y_OFFSET + 5 * LIGHT_POINT_SPACING; y += LIGHT_POINT_SPACING) {
+			for (int y = GRID_MIN_Y_OFFSET; y < GRID_MIN_Y_OFFSET + 6 * LIGHT_POINT_SPACING; y += LIGHT_POINT_SPACING) {
 				for (int z = GRID_MIN_OFFSET; z <= GRID_MAX_OFFSET; z += LIGHT_POINT_SPACING) {
 					positions.add(lanternPos.offset(x, y, z));
 				}

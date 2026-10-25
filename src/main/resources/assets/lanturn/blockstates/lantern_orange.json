@@ -2,7 +2,7 @@
   "multipart": [
     {
       "apply": {
-        "model": "lanturn:block/lantern_white"
+        "model": "lanturn:block/lantern_orange"
       }
     }
   ]

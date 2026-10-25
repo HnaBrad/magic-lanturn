@@ -3,7 +3,7 @@
 	"id": "lanturn",
 	"version": "${version}",
 	"name": "Magic Lanturn",
-	"description": "Adds a lantern with a 125-point light grid that fades out when broken.",
+	"description": "Adds 16 colored lanterns with a 150-point light grid that fades out when broken.",
 	"authors": [
 		"Audi"
 	],
