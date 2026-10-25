@@ -44,7 +44,11 @@ jobs:
             echo "Could not find the project version or built mod JAR."
             exit 1
           fi
-          previous_tag="$(git tag --list 'build-*' --sort=-version:refname | head -n 1)"
+          previous_tag="$(git tag --list 'v*' --sort=-creatordate | head -n 1)"
+          if [ -z "$previous_tag" ]; then
+            previous_tag="$(git tag --list 'build-*' --sort=-creatordate | head -n 1)"
+          fi
+          release_tag="v${version}-${GITHUB_SHA:0:7}"
           notes_file="$RUNNER_TEMP/release-notes.md"
           {
             echo "## Changes"
@@ -60,7 +64,7 @@ jobs:
               echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}"
             fi
           } > "$notes_file"
-          gh release create "build-${GITHUB_RUN_NUMBER}" "$jar_path" \
+          gh release create "$release_tag" "$jar_path" \
             --target "$GITHUB_SHA" \
-            --title "Magic Lanturn ${version} (build ${GITHUB_RUN_NUMBER})" \
+            --title "Magic Lanturn ${version}" \
             --notes-file "$notes_file"
