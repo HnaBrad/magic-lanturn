@@ -14,8 +14,8 @@ The lanterns and their point lights use matching RGB colors with
 [ColorLight](https://modrinth.com/mod/colorlight) installed on the client.
 Without ColorLight, Minecraft's built-in block lighting is white. All 16
 lanterns are available in the Magic Lanturn creative tab. GitHub Actions
-publishes the built mod JAR as a GitHub Release for every push, with
-automatically generated changelog notes.
+publishes the built mod JAR as a GitHub Release for every push, including
+commit-by-commit changelog notes and a full comparison link.
 
 ## Setup
 
