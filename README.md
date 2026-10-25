@@ -13,7 +13,10 @@ after being broken.
 The lanterns and their point lights use matching RGB colors with
 [ColorLight](https://modrinth.com/mod/colorlight) installed on the client.
 Without ColorLight, Minecraft's built-in block lighting is white. All 16
-lanterns are available in the Magic Lanturn creative tab. GitHub Actions
+lanterns are available in the Magic Lanturn creative tab and can be crafted
+with a vanilla lantern in the center, surrounded by glass. The default white
+lantern uses regular glass; each colored variant uses matching stained glass.
+GitHub Actions
 publishes the built mod JAR as a GitHub Release for every push, including
 commit-by-commit changelog notes and a full comparison link. Release titles
 show the mod version without a build number.
