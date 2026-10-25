@@ -50,13 +50,18 @@ public final class LightPointEntity extends Entity {
 		age++;
 		BlockPos lightPos = blockPosition();
 		BlockState lightState = level().getBlockState(lightPos);
+		int lightLevel = getLightLevelForAge();
 		if (lightState.is(LanturnContent.FADING_LIGHT) && lightState.getValue(FadingLightBlock.LIGHT_POINT)) {
-			int lightLevel = getLightLevelForAge();
 			if (lightLevel == 0) {
 				level().removeBlock(lightPos, false);
 			} else if (lightState.getValue(FadingLightBlock.LIGHT_LEVEL) != lightLevel) {
 				level().setBlock(lightPos, lightState.setValue(FadingLightBlock.LIGHT_LEVEL, lightLevel), 3);
 			}
+		} else if (lightState.isAir() && lightLevel > 0) {
+			level().setBlock(lightPos, LanturnContent.FADING_LIGHT.defaultBlockState()
+					.setValue(FadingLightBlock.LIGHT_LEVEL, lightLevel)
+					.setValue(FadingLightBlock.FADE_START_LEVEL, LanturnContent.LIGHT_LEVEL)
+					.setValue(FadingLightBlock.LIGHT_POINT, true), 3);
 		}
 
 		if (age >= LanturnContent.LIGHT_POINT_LIFETIME_TICKS) {
