@@ -1,7 +1,9 @@
 package name.modid;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -18,11 +20,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 public final class LanturnBlock extends Block {
 	private final LanturnColor color;
 	private final Block lightBlock;
-	private static final int LIGHT_POINT_COUNT = 300;
-	private static final int LIGHT_POINT_SPACING = 5;
+	private static final int LIGHT_POINT_COUNT = 1000;
 	private static final int GRID_Y_LAYERS = 12;
-	private static final int GRID_MIN_OFFSET = -10;
-	private static final int GRID_MAX_OFFSET = 10;
+	private static final int GRID_AREA_SIZE = 50;
+	private static final int GRID_MIN_OFFSET = -GRID_AREA_SIZE / 2;
 	private static final int GRID_MIN_Y_OFFSET = -12;
 
 	public LanturnBlock(BlockBehaviour.Properties properties, LanturnColor color) {
@@ -42,7 +43,7 @@ public final class LanturnBlock extends Block {
 		if (!level.isClientSide() && !oldState.is(this)) {
 			level.scheduleTick(pos, this, LanturnContent.ticksUntilNextFadeInLevel(1));
 			ServerLevel serverLevel = (ServerLevel) level;
-			for (BlockPos lightPos : lightPointPositions(pos)) {
+			for (BlockPos lightPos : lightPointPositions(pos, level.getRandom())) {
 				if (level.isInWorldBounds(lightPos) && level.getBlockState(lightPos).isAir()) {
 					level.setBlock(lightPos, lightBlock.defaultBlockState()
 							.setValue(FadingLightBlock.LIGHT_LEVEL, 0)
@@ -74,14 +75,19 @@ public final class LanturnBlock extends Block {
 		}
 	}
 
-	private static List<BlockPos> lightPointPositions(BlockPos lanternPos) {
+	private static List<BlockPos> lightPointPositions(BlockPos lanternPos, RandomSource random) {
 		List<BlockPos> positions = new ArrayList<>(LIGHT_POINT_COUNT);
-		for (int x = GRID_MIN_OFFSET; x <= GRID_MAX_OFFSET; x += LIGHT_POINT_SPACING) {
-			for (int y = GRID_MIN_Y_OFFSET; y < GRID_MIN_Y_OFFSET + GRID_Y_LAYERS * LIGHT_POINT_SPACING; y += LIGHT_POINT_SPACING) {
-				for (int z = GRID_MIN_OFFSET; z <= GRID_MAX_OFFSET; z += LIGHT_POINT_SPACING) {
-					positions.add(lanternPos.offset(x, y, z));
-				}
+		for (int layer = 0; layer < GRID_Y_LAYERS; layer++) {
+			int y = GRID_MIN_Y_OFFSET + layer * 5;
+			int pointsInLayer = LIGHT_POINT_COUNT / GRID_Y_LAYERS
+					+ (layer < LIGHT_POINT_COUNT % GRID_Y_LAYERS ? 1 : 0);
+			Set<BlockPos> layerPositions = new HashSet<>(pointsInLayer);
+			while (layerPositions.size() < pointsInLayer) {
+				int x = GRID_MIN_OFFSET + random.nextInt(GRID_AREA_SIZE);
+				int z = GRID_MIN_OFFSET + random.nextInt(GRID_AREA_SIZE);
+				layerPositions.add(lanternPos.offset(x, y, z));
 			}
+			positions.addAll(layerPositions);
 		}
 		return positions;
 	}
