@@ -2,13 +2,12 @@
 
 Magic Lanturn comes in all 16 standard Minecraft dye colors, with white as the
 default. Each lantern fades from darkness to maximum block light level 15 in
-300 game ticks (15 seconds at normal speed). It also spawns 1,000 invisible,
-non-colliding point entities and their matching invisible light sources,
-randomly distributed across a 50-by-50-block area over 12 vertical layers.
+300 game ticks (15 seconds at normal speed). It also places 1,000 invisible,
+non-colliding light blocks, randomly distributed across a 50-by-50-block area
+over 12 vertical layers.
 Each point randomly fades in during the first 600 game ticks (30 seconds), then
-stays lit until the lantern is broken. Afterward, each point fades out and
-despawns, removing its light source too. The lantern itself also fades out
-after being broken.
+stays lit until the lantern is broken. Afterward, each point fades out and is
+removed. The lantern itself also fades out after being broken.
 
 The lanterns and their point lights use matching RGB colors with
 [ColorLight](https://modrinth.com/mod/colorlight) installed on the client.

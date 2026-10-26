@@ -42,21 +42,17 @@ public final class LanturnBlock extends Block {
 	protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
 		if (!level.isClientSide() && !oldState.is(this)) {
 			level.scheduleTick(pos, this, LanturnContent.ticksUntilNextFadeInLevel(1));
-			ServerLevel serverLevel = (ServerLevel) level;
 			for (BlockPos lightPos : lightPointPositions(pos, level.getRandom())) {
-				if (level.isInWorldBounds(lightPos) && level.getBlockState(lightPos).isAir()) {
-					level.setBlock(lightPos, lightBlock.defaultBlockState()
-							.setValue(FadingLightBlock.LIGHT_LEVEL, 0)
-							.setValue(FadingLightBlock.FADE_START_LEVEL, LanturnContent.LIGHT_LEVEL)
-							.setValue(FadingLightBlock.LIGHT_POINT, true), 3);
-					LightPointEntity lightPoint = new LightPointEntity(LanturnContent.LIGHT_POINT_ENTITY, level);
-					lightPoint.setPos(lightPos.getX() + 0.5, lightPos.getY() + 0.5, lightPos.getZ() + 0.5);
-					lightPoint.setLanternPos(pos);
-					lightPoint.setColor(color);
-					if (!serverLevel.addFreshEntity(lightPoint)) {
-						level.removeBlock(lightPos, false);
-					}
+				if (!level.isInWorldBounds(lightPos) || !level.getBlockState(lightPos).isAir()) {
+					continue;
 				}
+				level.setBlock(lightPos, lightBlock.defaultBlockState()
+						.setValue(FadingLightBlock.LIGHT_LEVEL, 0)
+						.setValue(FadingLightBlock.FADE_START_LEVEL, LanturnContent.LIGHT_LEVEL)
+						.setValue(FadingLightBlock.LIGHT_POINT, true), 3);
+				level.scheduleTick(lightPos, lightBlock,
+						level.getRandom().nextInt(LanturnContent.LIGHT_POINT_FADE_IN_WINDOW_TICKS
+								- LanturnContent.LIGHT_POINT_FADE_IN_MAX_TICKS + 1));
 			}
 		}
 	}
@@ -96,6 +92,28 @@ public final class LanturnBlock extends Block {
 	public void playerDestroy(ServerLevel level, ServerPlayer player, BlockPos pos, BlockState state,
 			BlockEntity blockEntity, ItemStack tool) {
 		super.playerDestroy(level, player, pos, state, blockEntity, tool);
+		RandomSource random = level.getRandom();
+		for (int layer = 0; layer < GRID_Y_LAYERS; layer++) {
+			int y = GRID_MIN_Y_OFFSET + layer * 5;
+			for (int x = GRID_MIN_OFFSET; x < GRID_MIN_OFFSET + GRID_AREA_SIZE; x++) {
+				for (int z = GRID_MIN_OFFSET; z < GRID_MIN_OFFSET + GRID_AREA_SIZE; z++) {
+					BlockPos lightPos = pos.offset(x, y, z);
+					BlockState lightState = level.getBlockState(lightPos);
+					if (lightState.is(lightBlock) && lightState.getValue(FadingLightBlock.LIGHT_POINT)) {
+						int lightLevel = lightState.getValue(FadingLightBlock.LIGHT_LEVEL);
+						level.setBlock(lightPos, lightState
+								.setValue(FadingLightBlock.FADING_OUT, true)
+								.setValue(FadingLightBlock.FADE_START_LEVEL,
+										Math.max(1, lightLevel)), 3);
+						if (lightLevel == LanturnContent.LIGHT_LEVEL) {
+							level.scheduleTick(lightPos, lightBlock,
+									LanturnContent.ticksUntilNextFadeOutLevel(lightLevel, lightLevel));
+						}
+					}
+				}
+			}
+		}
+
 		int lightLevel = state.getValue(LanturnContent.LIGHT_LEVEL_PROPERTY);
 		if (lightLevel > 0) {
 			level.setBlock(pos, lightBlock.defaultBlockState()

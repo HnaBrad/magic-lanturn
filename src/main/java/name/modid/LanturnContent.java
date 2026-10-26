@@ -9,8 +9,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -24,31 +22,16 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 public final class LanturnContent {
 	private static final ResourceKey<CreativeModeTab> LANTURN_TAB_KEY =
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Lanturn.id("items"));
-	private static final ResourceKey<EntityType<?>> LIGHT_POINT_ENTITY_KEY =
-			ResourceKey.create(Registries.ENTITY_TYPE, Lanturn.id("light_point"));
 
 	public static final int LIGHT_LEVEL = 15;
 	public static final int FADE_IN_DURATION_TICKS = 300;
 	public static final int LIGHT_POINT_FADE_IN_WINDOW_TICKS = 600;
-	public static final int LIGHT_POINT_FADE_IN_MIN_TICKS = 40;
 	public static final int LIGHT_POINT_FADE_IN_MAX_TICKS = 120;
-	public static final int LIGHT_POINT_FADE_OUT_MIN_TICKS = 40;
-	public static final int LIGHT_POINT_FADE_OUT_MAX_TICKS = 120;
 	public static final int FADE_OUT_DURATION_TICKS = 200;
 	public static final IntegerProperty LIGHT_LEVEL_PROPERTY = IntegerProperty.create("light_level", 0, LIGHT_LEVEL);
 
 	public static final Map<LanturnColor, Block> FADING_LIGHTS = registerFadingLights();
 	public static final Block FADING_LIGHT = FADING_LIGHTS.get(LanturnColor.WHITE);
-
-	public static final EntityType<LightPointEntity> LIGHT_POINT_ENTITY = Registry.register(
-			BuiltInRegistries.ENTITY_TYPE,
-			LIGHT_POINT_ENTITY_KEY,
-			EntityType.Builder.of(LightPointEntity::new, MobCategory.MISC)
-					.sized(0.1f, 0.1f)
-					.noSummon()
-					.clientTrackingRange(4)
-					.build(LIGHT_POINT_ENTITY_KEY)
-	);
 
 	public static final Map<LanturnColor, Block> LANTURN_BLOCKS = registerLanturnBlocks();
 	public static final Block LANTURN_BLOCK = LANTURN_BLOCKS.get(LanturnColor.WHITE);

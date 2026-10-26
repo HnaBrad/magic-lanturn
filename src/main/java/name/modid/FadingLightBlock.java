@@ -18,18 +18,20 @@ public final class FadingLightBlock extends Block {
 	public static final IntegerProperty LIGHT_LEVEL = LanturnContent.LIGHT_LEVEL_PROPERTY;
 	public static final IntegerProperty FADE_START_LEVEL = IntegerProperty.create("fade_start_level", 1, LanturnContent.LIGHT_LEVEL);
 	public static final BooleanProperty LIGHT_POINT = BooleanProperty.create("light_point");
+	public static final BooleanProperty FADING_OUT = BooleanProperty.create("fading_out");
 
 	public FadingLightBlock(BlockBehaviour.Properties properties) {
 		super(properties);
 		registerDefaultState(defaultBlockState()
 				.setValue(LIGHT_LEVEL, 0)
 				.setValue(FADE_START_LEVEL, 1)
-				.setValue(LIGHT_POINT, false));
+				.setValue(LIGHT_POINT, false)
+				.setValue(FADING_OUT, false));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(LIGHT_LEVEL, FADE_START_LEVEL, LIGHT_POINT);
+		builder.add(LIGHT_LEVEL, FADE_START_LEVEL, LIGHT_POINT, FADING_OUT);
 	}
 
 	@Override
@@ -64,6 +66,24 @@ public final class FadingLightBlock extends Block {
 	@Override
 	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 		int lightLevel = state.getValue(LIGHT_LEVEL);
+		if (state.getValue(LIGHT_POINT)) {
+			if (!state.getValue(FADING_OUT) || lightLevel < LanturnContent.LIGHT_LEVEL) {
+				if (lightLevel >= LanturnContent.LIGHT_LEVEL) {
+					return;
+				}
+				int nextLightLevel = lightLevel + 1;
+				BlockState nextState = state.setValue(LIGHT_LEVEL, nextLightLevel);
+				if (state.getValue(FADING_OUT) && nextLightLevel == LanturnContent.LIGHT_LEVEL) {
+					nextState = nextState.setValue(FADE_START_LEVEL, LanturnContent.LIGHT_LEVEL);
+				}
+				level.setBlock(pos, nextState, 3);
+				if (nextLightLevel < LanturnContent.LIGHT_LEVEL || state.getValue(FADING_OUT)) {
+					level.scheduleTick(pos, this, random.nextInt(2, 9));
+				}
+				return;
+			}
+		}
+
 		if (lightLevel <= 1) {
 			level.removeBlock(pos, false);
 			return;
